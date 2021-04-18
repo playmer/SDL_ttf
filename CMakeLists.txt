@@ -34,18 +34,13 @@ if (ANDROID)
 
     add_subdirectory(external/freetype-2.10.4)
     include_directories(external/freetype-2.10.4/include)
-
-    target_include_directories(SDL2_ttf PUBLIC .)
     target_link_libraries(SDL2_ttf PRIVATE freetype SDL2)
 
 else()
 
-
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-find_package(SDL2 REQUIRED)
-find_package(Freetype REQUIRED)
 find_package(PkgConfig QUIET)
 
 set(SDL_TTF_MAJOR_VERSION 2)
@@ -56,21 +51,22 @@ set(SDL_TTF_BINARY_AGE 15)
 set(SDL_TTF_VERSION "${SDL_TTF_MAJOR_VERSION}.${SDL_TTF_MINOR_VERSION}.${SDL_TTF_MICRO_VERSION}")
 
 ##### library generation #####
-add_library(SDL2_ttf SDL_ttf.c SDL_ttf.h)
-target_link_libraries(SDL2_ttf SDL2::SDL2 Freetype::Freetype)
-target_include_directories(SDL2_ttf PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
+add_library(SDL2_ttf STATIC SDL_ttf.c SDL_ttf.h)
+target_include_directories(SDL2_ttf PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(SDL2_ttf SDL2 freetype)
+#target_include_directories(SDL2_ttf PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
 
-install(
-  TARGETS SDL2_ttf
-  EXPORT SDL2_ttfTargets
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-install(
-  FILES SDL_ttf.h
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SDL2
-)
+#install(
+#  TARGETS SDL2_ttf
+#  EXPORT SDL2_ttfTargets
+#  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#)
+#install(
+#  FILES SDL_ttf.h
+#  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SDL2
+#)
 
 ##### export files #####
 if (APPLE)
@@ -86,19 +82,19 @@ write_basic_package_version_file("${CMAKE_BINARY_DIR}/SDL2_ttfConfigVersion.cmak
   COMPATIBILITY AnyNewerVersion
 )
 
-install(
-  EXPORT SDL2_ttfTargets
-  FILE SDL2_ttfTargets.cmake
-  NAMESPACE SDL2_ttf::
-  DESTINATION ${PKG_PREFIX}
-)
-install(
-  FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/SDL2_ttfConfig.cmake
-    ${CMAKE_BINARY_DIR}/SDL2_ttfConfigVersion.cmake
-  DESTINATION ${PKG_PREFIX}
-  COMPONENT Devel
-)
+#install(
+#  EXPORT SDL2_ttfTargets
+#  FILE SDL2_ttfTargets.cmake
+#  NAMESPACE SDL2_ttf::
+#  DESTINATION ${PKG_PREFIX}
+#)
+#install(
+#  FILES
+#    ${CMAKE_CURRENT_SOURCE_DIR}/SDL2_ttfConfig.cmake
+#    ${CMAKE_BINARY_DIR}/SDL2_ttfConfigVersion.cmake
+#  DESTINATION ${PKG_PREFIX}
+#  COMPONENT Devel
+#)
 
 ##### pkg-config #####
 if (PKG_CONFIG_FOUND)
